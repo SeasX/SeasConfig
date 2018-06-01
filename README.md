@@ -2,8 +2,9 @@
 配置管理中心
 
 
-## 获得不带内存信息的状态页
- - http://127.0.0.1:6699/status
+## 状态页
+### 获得不带内存信息的状态页
+ - curl http://127.0.0.1:6699/status
 ```
 {
 	AppName: "SeasConfig",
@@ -15,8 +16,8 @@
 }
 ```
 
-## 获得带内存信息的状态页
- - http://127.0.0.1:6699/status?getMemStats=true
+### 获得带内存信息的状态页
+ - curl http://127.0.0.1:6699/status?getMemStats=true
 ```
 {
 AppName: "SeasConfig",
@@ -56,5 +57,167 @@ MemStats: {
 	EnableGC: true,
 	DebugGC: false
 	}
+}
+```
+
+## 产品API
+### 获取所有产品概述
+ - GET http://127.0.0.1:6699/product/all
+```
+curl http://127.0.0.1:6699/product/all
+
+{
+    "Code": 1000,
+    "Data": {
+        "test_product": {
+            "Name": "product_name",
+            "Description": "product_description",
+            "CreateTime": 1527828786,
+            "UpdateTime": 1527828786
+        },
+        "test_product_2": {
+            "Name": "product_name",
+            "Description": "product_description",
+            "CreateTime": 1527833319,
+            "UpdateTime": 1527833506
+        }
+    },
+    "Message": "ok"
+}
+```
+
+### 创建新产品
+ - POST http://127.0.0.1:6699/product/{:PID}
+```
+
+curl -d "name=product_name&description=product_description" http://127.0.0.1:6699/product/test_product
+
+{
+    "Code": 1000,
+    "Data": "test_product",
+    "Message": "Create Product Successful"
+}
+```
+
+### 更新原有产品
+ - PUT http://127.0.0.1:6699/product/{:PID}
+```
+curl -X PUT -d "name=updated_name&description=updated_description" http://127.0.0.1:6699/product/test_product
+
+{
+    "Code": 1000,
+    "Data": "test_product",
+    "Message": "Update Product Successful"
+}
+
+```
+
+### 获取某产品概述
+ - GET http://127.0.0.1:6699/product/{:PID}
+```
+curl http://127.0.0.1:6699/product/test_product
+
+{
+    "Code": 1000,
+    "Data": {
+        "Name": "updated_name",
+        "Description": "updated_description",
+        "CreateTime": 1527828786,
+        "UpdateTime": 1527834696
+    },
+    "Message": "ok"
+}
+
+```
+
+### 删除某产品
+ - DELETE http://127.0.0.1:6699/product/{:PID}
+```
+curl -X DELETE http://127.0.0.1:6699/product/test_product
+
+{
+    "Code": 1000,
+    "Data": "test_product",
+    "Message": "Delete Product Successful"
+}
+```
+
+## 应用API
+### 获取某产品下所有应用概述
+ - GET http://127.0.0.1:6699/app/{:PID}/all
+```
+curl http://127.0.0.1:6699/app/test_product/all
+
+{
+    "Code": 1000,
+    "Data": {
+        "test_app": {
+            "Name": "updated_name",
+            "Description": "updated_description",
+            "CreateTime": 1527835739,
+            "UpdateTime": 1527835739
+        },
+        "test_app_2": {
+            "Name": "updated_name",
+            "Description": "updated_description",
+            "CreateTime": 1527835894,
+            "UpdateTime": 1527835894
+        }
+    },
+    "Message": "ok"
+}
+
+```
+
+### 在某产品下创建一个应用
+ - POST http://127.0.0.1:6699/app/{:PID}/{:AID}
+```
+curl -d "name=product_name&description=product_description" http://127.0.0.1:6699/app/test_product/test_app
+
+{
+    "Code": 1000,
+    "Data": "test_product/test_app",
+    "Message": "Create App Successful"
+}
+```
+
+### 更新某应用
+ - PUT http://127.0.0.1:6699/app/{:PID}/{:AID}
+```
+curl -X PUT -d "name=updated_name&description=updated_description" http://127.0.0.1:6699/app/test_product/test_app
+
+{
+    "Code": 1000,
+    "Data": "test_product/test_app",
+    "Message": "Update App Successful"
+}
+```
+
+### 获取某应用概述
+ - GET http://127.0.0.1:6699/app/{:PID}/{:AID}
+```
+curl http://127.0.0.1:6699/app/test_product/test_app
+
+{
+    "Code": 1000,
+    "Data": {
+        "Name": "updated_name",
+        "Description": "updated_description",
+        "CreateTime": 1527835739,
+        "UpdateTime": 1527835739
+    },
+    "Message": "ok"
+}
+```
+
+### 删除某应用
+ - DELETE http://127.0.0.1:6699/app/{:PID}/{:AID}
+```
+curl -X DELETE http://127.0.0.1:6699/app/test_product/test_app
+
+{
+    "Code": 1000,
+    "Data": "test_product/test_app",
+    "Message": "Delete App Successful"
 }
 ```
