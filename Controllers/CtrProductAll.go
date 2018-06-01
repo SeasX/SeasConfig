@@ -2,6 +2,7 @@ package Controllers
 
 import (
 	"github.com/CloudWise-OpenSource/GoCrab/Api"
+	"github.com/SeasX/SeasConfig/Models"
 )
 
 type ProductAllControl struct {
@@ -10,5 +11,9 @@ type ProductAllControl struct {
 
 //get all products info
 func (con *ProductAllControl) Get() {
-	GoCrab.Debug("Get ProductAllControl")
+	if !Models.ExistsProducts() {
+		con.RESTFaild(nil, "Have No Product In SeasConfig")
+	} else {
+		con.RESTSuccess(Models.GetAllProducts(), nil)
+	}
 }

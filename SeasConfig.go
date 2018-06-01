@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/CloudWise-OpenSource/GoCrab/Api"
 	"github.com/SeasX/SeasConfig/Controllers"
+	_ "github.com/SeasX/SeasConfig/Tasks"
 )
 
 func main() {

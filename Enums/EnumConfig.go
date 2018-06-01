@@ -5,44 +5,37 @@ import (
 )
 
 var (
-	ConfigEnv       string
-	DefaultApi      string
-	BatchDefaultApi string
-	Compress        string
-	ChannelCount    int
-	UdpPort         int
-	QueueLenMax     int
-	GziperCount     int
-
-	RuntimeGC int
-
+	Compress            string
+	ChannelCount        int
+	RuntimeGC           int
 	ConnectTimeout      int
 	ResponseTimeout     int
 	MaxIdleConnsPerHost int
 	IdleConnTimeout     int
-
-	AssignSendUrl      string
-	AssignBatchSendUrl string
-
-	AssignRegisterHost string
-
-	QueueLenExceedStrategy string
+	DBProductsFile      string
 )
+
+func GetDBProductsFile() string {
+	if DBProductsFile == "" {
+		DBProductsFile = DB_DIR + DB_FILE_PRODUCTS
+	}
+	return DBProductsFile
+}
+
+func GetDBProductDir(pid string) string {
+	return DB_DIR + pid
+}
+
+func GetDBAppsFile(pid string) string {
+	return DB_DIR + pid + "/" + DB_FILE_APPS
+}
+
+func GetDBConfigFile(pid string, aid string) string {
+	return DB_DIR + pid + "/" + aid + "/" + DB_FILE_APPS
+}
 
 func CheckIfDebug() bool {
 	return GoCrab.RunMode == GoCrab.RUNMODE_DEV
-}
-
-func GetEnv() string {
-	if ConfigEnv != "" {
-		return ConfigEnv
-	}
-
-	if setEnv := GoCrab.AppConfig.String("SetEnv"); setEnv != "" {
-		ConfigEnv = setEnv
-	}
-
-	return ConfigEnv
 }
 
 func GetChannelCount() int {

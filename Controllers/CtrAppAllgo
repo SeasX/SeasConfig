@@ -2,6 +2,7 @@ package Controllers
 
 import (
 	"github.com/CloudWise-OpenSource/GoCrab/Api"
+	"github.com/SeasX/SeasConfig/Models"
 )
 
 type AppAllControl struct {
@@ -18,5 +19,10 @@ func (con *AppAllControl) getParams() string {
 //get all app list of an product
 func (con *AppAllControl) Get() {
 	pid := con.getParams()
-	GoCrab.Debug("Get AppAllControl PID", pid)
+
+	if !Models.ExistsApps(pid) {
+		con.RESTFaild(nil, "Have No Apps In This Product")
+	} else {
+		con.RESTSuccess(Models.GetAllApps(pid), nil)
+	}
 }
