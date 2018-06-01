@@ -142,6 +142,16 @@ curl -X DELETE http://127.0.0.1:6699/product/test_product
 }
 ```
 
+### 检查某产品是否存在
+ - HEAD http://127.0.0.1:6699/product/{:PID}
+```
+curl -i -X HEAD http://127.0.0.1:6699/product/test_product
+
+HTTP/1.1 200 OK
+Date: Fri, 01 Jun 2018 07:03:39 GMT
+
+```
+
 ## 应用API
 ### 获取某产品下所有应用概述
  - GET http://127.0.0.1:6699/app/{:PID}/all
@@ -220,4 +230,14 @@ curl -X DELETE http://127.0.0.1:6699/app/test_product/test_app
     "Data": "test_product/test_app",
     "Message": "Delete App Successful"
 }
+```
+
+### 检查某应用是否存在
+ - HEAD http://127.0.0.1:6699/app/{:PID}/{:AID}
+```
+curl -i -X HEAD http://127.0.0.1:6699/app/test_product/test_app
+
+HTTP/1.1 404 Not Found
+Date: Fri, 01 Jun 2018 07:06:39 GMT
+
 ```
