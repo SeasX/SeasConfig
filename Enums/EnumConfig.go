@@ -31,7 +31,7 @@ func GetDBAppsFile(pid string) string {
 }
 
 func GetDBConfigFile(pid string, aid string) string {
-	return DB_DIR + pid + "/" + aid + "/" + DB_FILE_APPS
+	return DB_DIR + pid + "/" + aid + "_" + DB_FILE_CONFIG
 }
 
 func CheckIfDebug() bool {

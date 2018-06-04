@@ -1,7 +1,15 @@
 package Enums
 
+import (
+	"errors"
+)
+
 var (
-	JSON_FAILD = map[string]interface{}{"Code": 999, "Message": "faild", "Data": ""}
+	HAVE_NO_PRODUCT = "Have No Product In SeasConfig"
+
+	NOT_FOUND_PRODUCT = errors.New("Can Not Found Product")
+	NOT_FOUND_APP     = errors.New("Can Not Found App")
+	NOT_FOUND_CONFIG  = errors.New("Can Not Found Config")
 )
 
 const APP_NAME = "SeasConfig"
