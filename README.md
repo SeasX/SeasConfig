@@ -4,8 +4,10 @@
 
 ## 状态页
 ### 获得不带内存信息的状态页
- - curl http://127.0.0.1:6699/status
+ - GET /status
 ```
+curl http://127.0.0.1:6699/status
+
 {
 	AppName: "SeasConfig",
 	Version: "0.1.0",
@@ -17,8 +19,10 @@
 ```
 
 ### 获得带内存信息的状态页
- - curl http://127.0.0.1:6699/status?getMemStats=true
+ - GET /status?getMemStats=true
 ```
+curl http://127.0.0.1:6699/status?getMemStats=true
+
 {
 AppName: "SeasConfig",
 Version: "0.1.0",
@@ -62,7 +66,7 @@ MemStats: {
 
 ## 产品API
 ### 获取所有产品概述
- - GET http://127.0.0.1:6699/product/all
+ - GET /product/all
 ```
 curl http://127.0.0.1:6699/product/all
 
@@ -87,7 +91,7 @@ curl http://127.0.0.1:6699/product/all
 ```
 
 ### 创建新产品
- - POST http://127.0.0.1:6699/product/{:PID}
+ - POST /product/{:PID}
 ```
 
 curl -d "name=product_name&description=product_description" http://127.0.0.1:6699/product/test_product
@@ -100,7 +104,7 @@ curl -d "name=product_name&description=product_description" http://127.0.0.1:669
 ```
 
 ### 更新原有产品
- - PUT http://127.0.0.1:6699/product/{:PID}
+ - PUT /product/{:PID}
 ```
 curl -X PUT -d "name=updated_name&description=updated_description" http://127.0.0.1:6699/product/test_product
 
@@ -113,7 +117,7 @@ curl -X PUT -d "name=updated_name&description=updated_description" http://127.0.
 ```
 
 ### 获取某产品概述
- - GET http://127.0.0.1:6699/product/{:PID}
+ - GET /product/{:PID}
 ```
 curl http://127.0.0.1:6699/product/test_product
 
@@ -131,7 +135,7 @@ curl http://127.0.0.1:6699/product/test_product
 ```
 
 ### 删除某产品
- - DELETE http://127.0.0.1:6699/product/{:PID}
+ - DELETE /product/{:PID}
 ```
 curl -X DELETE http://127.0.0.1:6699/product/test_product
 
@@ -143,7 +147,7 @@ curl -X DELETE http://127.0.0.1:6699/product/test_product
 ```
 
 ### 检查某产品是否存在
- - HEAD http://127.0.0.1:6699/product/{:PID}
+ - HEAD /product/{:PID}
 ```
 curl -i -X HEAD http://127.0.0.1:6699/product/test_product
 
@@ -154,7 +158,7 @@ Date: Fri, 01 Jun 2018 07:03:39 GMT
 
 ## 应用API
 ### 获取某产品下所有应用概述
- - GET http://127.0.0.1:6699/app/{:PID}/all
+ - GET /app/{:PID}/all
 ```
 curl http://127.0.0.1:6699/app/test_product/all
 
@@ -180,7 +184,7 @@ curl http://127.0.0.1:6699/app/test_product/all
 ```
 
 ### 在某产品下创建一个应用
- - POST http://127.0.0.1:6699/app/{:PID}/{:AID}
+ - POST /app/{:PID}/{:AID}
 ```
 curl -d "name=product_name&description=product_description" http://127.0.0.1:6699/app/test_product/test_app
 
@@ -192,7 +196,7 @@ curl -d "name=product_name&description=product_description" http://127.0.0.1:669
 ```
 
 ### 更新某应用
- - PUT http://127.0.0.1:6699/app/{:PID}/{:AID}
+ - PUT /app/{:PID}/{:AID}
 ```
 curl -X PUT -d "name=updated_name&description=updated_description" http://127.0.0.1:6699/app/test_product/test_app
 
@@ -206,7 +210,7 @@ curl -X PUT -d "name=updated_name&description=updated_description" http://127.0.
 ### 获取某应用概述
  - GET http://127.0.0.1:6699/app/{:PID}/{:AID}
 ```
-curl http://127.0.0.1:6699/app/test_product/test_app
+curl /app/test_product/test_app
 
 {
     "Code": 1000,
@@ -221,7 +225,7 @@ curl http://127.0.0.1:6699/app/test_product/test_app
 ```
 
 ### 删除某应用
- - DELETE http://127.0.0.1:6699/app/{:PID}/{:AID}
+ - DELETE /app/{:PID}/{:AID}
 ```
 curl -X DELETE http://127.0.0.1:6699/app/test_product/test_app
 
@@ -233,11 +237,84 @@ curl -X DELETE http://127.0.0.1:6699/app/test_product/test_app
 ```
 
 ### 检查某应用是否存在
- - HEAD http://127.0.0.1:6699/app/{:PID}/{:AID}
+ - HEAD /app/{:PID}/{:AID}
 ```
 curl -i -X HEAD http://127.0.0.1:6699/app/test_product/test_app
 
 HTTP/1.1 404 Not Found
 Date: Fri, 01 Jun 2018 07:06:39 GMT
 
+```
+
+## 配置API
+### 获取某应用下所有配置
+ - GET /config/{:PID}/{:AID}/all
+```
+curl http://127.0.0.1:6699/config/test_product/test_app_2/all
+
+{
+    "Code": 1000,
+    "Data": {
+        "key_1": "value_1",
+        "key_2": "value_2"
+    },
+    "Message": "ok"
+}
+```
+
+### 创建一个配置项
+ - POST /config/{:PID}/{:AID}/{:KEY}
+```
+curl -d "value=value_1" http://127.0.0.1:6699/config/test_product/test_app_2/key_1
+
+{
+    "Code": 1000,
+    "Data": "test_product/test_app_2/key_1",
+    "Message": "Create Config Successful"
+}
+```
+
+### 更新一个配置项
+ - PUT /config/{:PID}/{:AID}/{:KEY}
+```
+curl -X PUT -d "value=updated_value" http://127.0.0.1:6699/config/test_product/test_app_2/key_1
+
+{
+    "Code": 1000,
+    "Data": "test_product/test_app_2/key_1",
+    "Message": "Update Config Successful"
+}
+```
+
+### 获取单个配置项
+ - GET /config/{:PID}/{:AID}/{:KEY}
+```
+curl http://127.0.0.1:6699/config/test_product/test_app_2/key_1
+
+{
+    "Code": 1000,
+    "Data": "value_1",
+    "Message": "ok"
+}
+```
+
+### 删除某配置项
+ - DELETE /config/{:PID}/{:AID}/{:KEY}
+```
+curl -X DELETE http://127.0.0.1:6699/config/test_product/test_app_2/key_1
+{
+    "Code": 1000,
+    "Data": "test_product/test_app_2/key_1",
+    "Message": "Delete Config Successful"
+}
+```
+
+### 检查某配置项是否存在
+ - HEAD /config/{:PID}/{:AID}/{:KEY}
+```
+curl -i -X HEAD http://127.0.0.1:6699/config/test_product/test_app_2/key_1
+
+HTTP/1.1 200 OK
+Server: GoCrab/1.0
+Date: Mon, 04 Jun 2018 14:20:20 GMT
 ```
