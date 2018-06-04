@@ -22,11 +22,14 @@ func LoadProducts(products interface{}) error {
 	if err == nil {
 		decoder := gob.NewDecoder(file)
 		err = decoder.Decode(products)
-
-		GoCrab.Debug("LoadProducts Successful")
-	} else {
-		GoCrab.Error("LoadProducts Error", productDbFile, err)
 	}
+
+	if err != nil {
+		GoCrab.Error("LoadProducts Error", productDbFile, err)
+	} else {
+		GoCrab.Debug("LoadProducts Complete")
+	}
+
 	file.Close()
 
 	return err

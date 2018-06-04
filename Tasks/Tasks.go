@@ -7,6 +7,7 @@ import (
 func init() {
 	LoadProducts(&Models.Products)
 	LoadApps()
+	LoadConfigs()
 
 	WatchSaveProducts()
 }
@@ -37,4 +38,18 @@ func WatchSaveApps(pid string) {
 			}
 		}
 	}(pid)
+}
+
+func WatchSaveConfigs(pid string, aid string) {
+	go func(pid string, aid string) {
+		for {
+			select {
+			case <-Models.ConfigChans[pid+aid].Channel:
+				go func(pid string, aid string) {
+					SaveConfigs(pid, aid, Models.GetAppConfigs(pid, aid))
+					return
+				}(pid, aid)
+			}
+		}
+	}(pid, aid)
 }

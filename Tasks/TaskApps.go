@@ -18,7 +18,7 @@ func LoadApps() error {
 		Models.Apps[pid] = app
 	}
 
-	GoCrab.Debug("LoadApps Successful")
+	GoCrab.Debug("LoadApps Complete")
 
 	return nil
 }
@@ -35,11 +35,14 @@ func LoadApp(pid string, apps interface{}) error {
 	if err == nil {
 		decoder := gob.NewDecoder(file)
 		err = decoder.Decode(apps)
-
-		GoCrab.Debug("LoadApp Successful", fileName)
-	} else {
-		GoCrab.Error("LoadApp Error", fileName, err)
 	}
+
+	if err != nil {
+		GoCrab.Error("LoadApp Error", fileName, err)
+	} else {
+		GoCrab.Debug("LoadApp Successful", fileName)
+	}
+
 	file.Close()
 
 	return err
