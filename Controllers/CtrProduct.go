@@ -10,11 +10,11 @@ type ProductControl struct {
 }
 
 //get all input params in uri
-func (con *ProductControl) getParams(getExcess bool) (pid string, name string, description string) {
-	pid = con.Ctx.Input.Params[":PID"]
+func (ctr *ProductControl) getParams(getExcess bool) (pid string, name string, description string) {
+	pid = ctr.Ctx.Input.Params[":PID"]
 	if getExcess {
-		name = con.GetString("name")
-		description = con.GetString("description")
+		name = ctr.GetString("name")
+		description = ctr.GetString("description")
 	} else {
 		name = ""
 		description = ""
@@ -24,54 +24,53 @@ func (con *ProductControl) getParams(getExcess bool) (pid string, name string, d
 }
 
 //create new product
-func (con *ProductControl) Post() {
-	pid, name, description := con.getParams(true)
+func (ctr *ProductControl) Post() {
+	pid, name, description := ctr.getParams(true)
 	Models.PutProduct(pid, name, description)
 
-	con.RESTSuccess(pid, "Create Product Successful")
+	ctr.RESTSuccess(pid, "Create Product Successful")
 }
 
 //get product name
-func (con *ProductControl) Get() {
-	pid, _, _ := con.getParams(false)
-	product, have := Models.GetProduct(pid)
-	if !have {
-		con.RESTFaild(pid, "Can not find product")
+func (ctr *ProductControl) Get() {
+	pid, _, _ := ctr.getParams(false)
+	if product, err := Models.GetProduct(pid); err != nil {
+		ctr.RESTFaild(pid, err.Error())
 	} else {
-		con.RESTSuccess(product, nil)
+		ctr.RESTSuccess(product, nil)
 	}
 }
 
 //update product info
-func (con *ProductControl) Put() {
-	pid, name, description := con.getParams(true)
+func (ctr *ProductControl) Put() {
+	pid, name, description := ctr.getParams(true)
 	Models.PutProduct(pid, name, description)
 
-	con.RESTSuccess(pid, "Update Product Successful")
+	ctr.RESTSuccess(pid, "Update Product Successful")
 }
 
 //delete product by pid
-func (con *ProductControl) Delete() {
-	pid, _, _ := con.getParams(false)
+func (ctr *ProductControl) Delete() {
+	pid, _, _ := ctr.getParams(false)
 
-	if !Models.ExistsProduct(pid) {
-		con.RESTFaild(pid, "Can not find product")
+	if err := Models.ExistsProduct(pid); err != nil {
+		ctr.RESTFaild(pid, err.Error())
 	} else {
 		if Models.DeleteProduct(pid) {
-			con.RESTSuccess(pid, "Delete Product Successful")
+			ctr.RESTSuccess(pid, "Delete Product Successful")
 		} else {
-			con.RESTFaild(pid, "Delete Product unsuccessful")
+			ctr.RESTFaild(pid, "Delete Product unsuccessful")
 		}
 	}
 }
 
 //exists product by pid
-func (con *ProductControl) Head() {
-	pid, _, _ := con.getParams(false)
+func (ctr *ProductControl) Head() {
+	pid, _, _ := ctr.getParams(false)
 
-	if Models.ExistsProduct(pid) {
-		con.RESTHeadSuccess()
+	if err := Models.ExistsProduct(pid); err != nil {
+		ctr.RESTHeadNotFound()
 	} else {
-		con.RESTHeadNotFound()
+		ctr.RESTHeadSuccess()
 	}
 }

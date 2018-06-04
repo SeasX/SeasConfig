@@ -11,13 +11,13 @@ type AppControl struct {
 }
 
 //get all params
-func (con *AppControl) getParams(getExcess bool) (pid string, aid string, name string, description string) {
-	pid = con.Ctx.Input.Params[":PID"]
-	aid = con.Ctx.Input.Params[":AID"]
+func (ctr *AppControl) getParams(getExcess bool) (pid string, aid string, name string, description string) {
+	pid = ctr.Ctx.Input.Params[":PID"]
+	aid = ctr.Ctx.Input.Params[":AID"]
 
 	if getExcess {
-		name = con.GetString("name")
-		description = con.GetString("description")
+		name = ctr.GetString("name")
+		description = ctr.GetString("description")
 	} else {
 		name = ""
 		description = ""
@@ -26,100 +26,94 @@ func (con *AppControl) getParams(getExcess bool) (pid string, aid string, name s
 	return pid, aid, name, description
 }
 
-//create new app
-func (con *AppControl) Post() {
-	pid, aid, name, description := con.getParams(true)
-
-	have := Models.ExistsProduct(pid)
-	if !have {
-		con.RESTFaild(pid, "Can not find product")
-		return
-	}
-
+func (ctr *AppControl) validChan(pid string) {
 	if Models.InitAppChan(pid) {
 		Tasks.WatchSaveApps(pid)
 	}
+}
+
+//create new app
+func (ctr *AppControl) Post() {
+	pid, aid, name, description := ctr.getParams(true)
+
+	if err := Models.ExistsProduct(pid); err != nil {
+		ctr.RESTFaild(pid, err.Error())
+		return
+	}
+
+	ctr.validChan(pid)
 
 	if Models.PutApp(pid, aid, name, description) {
-		con.RESTSuccess(pid+"/"+aid, "Create App Successful")
+		ctr.RESTSuccess(pid+"/"+aid, "Create App Successful")
 	} else {
-		con.RESTFaild(pid+"/"+aid, "Create App Faild")
+		ctr.RESTFaild(pid+"/"+aid, "Create App Faild")
 	}
 }
 
 //get app name
-func (con *AppControl) Get() {
-	pid, aid, _, _ := con.getParams(false)
+func (ctr *AppControl) Get() {
+	pid, aid, _, _ := ctr.getParams(false)
 
-	have := Models.ExistsProduct(pid)
-	if !have {
-		con.RESTFaild(pid, "Can not find product")
+	if err := Models.ExistsProduct(pid); err != nil {
+		ctr.RESTFaild(pid, err.Error())
 		return
 	}
 
-	app, have := Models.GetApp(pid, aid)
-	if !have {
-		con.RESTFaild(pid+"/"+aid, "Can not find App")
+	if app, err := Models.GetApp(pid, aid); err != nil {
+		ctr.RESTFaild(pid+"/"+aid, err.Error())
 	} else {
-		con.RESTSuccess(app, nil)
+		ctr.RESTSuccess(app, nil)
 	}
 }
 
 //update app info
-func (con *AppControl) Put() {
-	pid, aid, name, description := con.getParams(true)
+func (ctr *AppControl) Put() {
+	pid, aid, name, description := ctr.getParams(true)
 
-	have := Models.ExistsProduct(pid)
-	if !have {
-		con.RESTFaild(pid, "Can not find product")
+	if err := Models.ExistsProduct(pid); err != nil {
+		ctr.RESTFaild(pid, err.Error())
 		return
 	}
 
-	if Models.InitAppChan(pid) {
-		Tasks.WatchSaveApps(pid)
-	}
+	ctr.validChan(pid)
 
 	if Models.PutApp(pid, aid, name, description) {
-		con.RESTSuccess(pid+"/"+aid, "Update App Successful")
+		ctr.RESTSuccess(pid+"/"+aid, "Update App Successful")
 	} else {
-		con.RESTFaild(pid+"/"+aid, "Update App Faild")
+		ctr.RESTFaild(pid+"/"+aid, "Update App Faild")
 	}
 }
 
 //delete app by aid
-func (con *AppControl) Delete() {
-	pid, aid, _, _ := con.getParams(false)
+func (ctr *AppControl) Delete() {
+	pid, aid, _, _ := ctr.getParams(false)
 
-	have := Models.ExistsProduct(pid)
-	if !have {
-		con.RESTFaild(pid, "Can not find product")
+	if err := Models.ExistsProduct(pid); err != nil {
+		ctr.RESTFaild(pid, err.Error())
 		return
 	}
 
-	have = Models.ExistsApp(pid, aid)
-	if !have {
-		con.RESTFaild(pid+"/"+aid, "Can not find App")
+	if err := Models.ExistsApp(pid, aid); err != nil {
+		ctr.RESTFaild(pid+"/"+aid, err.Error())
 		return
 	}
 
-	if Models.InitAppChan(pid) {
-		Tasks.WatchSaveApps(pid)
-	}
+	ctr.validChan(pid)
 
 	if Models.DeleteApp(pid, aid) {
-		con.RESTSuccess(pid+"/"+aid, "Delete App Successful")
+		ctr.RESTSuccess(pid+"/"+aid, "Delete App Successful")
 	} else {
-		con.RESTFaild(pid+"/"+aid, "Delete App Faild")
+		ctr.RESTFaild(pid+"/"+aid, "Delete App Faild")
 	}
 }
 
 //exists app by aid
-func (con *AppControl) Head() {
-	pid, aid, _, _ := con.getParams(false)
+func (ctr *AppControl) Head() {
+	pid, aid, _, _ := ctr.getParams(false)
 
-	if Models.ExistsApp(pid, aid) {
-		con.RESTHeadSuccess()
+	if err := Models.ExistsApp(pid, aid); err != nil {
+		ctr.RESTHeadNotFound()
 	} else {
-		con.RESTHeadNotFound()
+		ctr.RESTHeadSuccess()
 	}
 }

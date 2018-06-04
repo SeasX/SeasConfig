@@ -9,16 +9,16 @@ type StatusControl struct {
 	GoCrab.Controller
 }
 
-func (con *StatusControl) Get() {
-	mem, _ := con.GetBool("getMemStats")
+func (ctr *StatusControl) Get() {
+	mem, _ := ctr.GetBool("getMemStats")
 
 	if mem {
 		obsWithM := Models.GetStatusWithMem()
-		con.Data["json"] = obsWithM
+		ctr.Data["json"] = obsWithM
 	} else {
 		obsWithOutM := Models.GetStatusWithOutMem()
-		con.Data["json"] = obsWithOutM
+		ctr.Data["json"] = obsWithOutM
 	}
 
-	con.ServeJson()
+	ctr.ServeJson()
 }

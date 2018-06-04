@@ -2,6 +2,7 @@ package Controllers
 
 import (
 	"github.com/CloudWise-OpenSource/GoCrab/Api"
+	"github.com/SeasX/SeasConfig/Enums"
 	"github.com/SeasX/SeasConfig/Models"
 )
 
@@ -10,10 +11,10 @@ type ProductAllControl struct {
 }
 
 //get all products info
-func (con *ProductAllControl) Get() {
+func (ctr *ProductAllControl) Get() {
 	if !Models.ExistsProducts() {
-		con.RESTFaild(nil, "Have No Product In SeasConfig")
+		ctr.RESTFaild(nil, Enums.HAVE_NO_PRODUCT)
 	} else {
-		con.RESTSuccess(Models.GetAllProducts(), nil)
+		ctr.RESTSuccess(Models.GetAllProducts(), nil)
 	}
 }
