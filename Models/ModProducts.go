@@ -1,6 +1,7 @@
 package Models
 
 import (
+	"github.com/SeasX/SeasConfig/Enums"
 	"sync"
 	"time"
 )
@@ -36,19 +37,19 @@ func ExistsProducts() (have bool) {
 	return true
 }
 
-func GetProduct(pid string) (pro *Product, have bool) {
+func GetProduct(pid string) (pro *Product, err error) {
 	if _, ok := Products[pid]; !ok {
-		return nil, false
+		return nil, Enums.NOT_FOUND_PRODUCT
 	}
-	return Products[pid], true
+	return Products[pid], nil
 }
 
-func ExistsProduct(pid string) bool {
+func ExistsProduct(pid string) error {
 	if _, ok := Products[pid]; !ok {
-		return false
+		return Enums.NOT_FOUND_PRODUCT
 	}
 
-	return true
+	return nil
 }
 
 func PutProduct(pid string, name string, descr string) bool {

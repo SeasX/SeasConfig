@@ -41,20 +41,20 @@ func ExistsApps(pid string) (have bool) {
 	return true
 }
 
-func GetApp(pid string, aid string) (app *App, have bool) {
+func GetApp(pid string, aid string) (app *App, err error) {
 	if _, ok := Apps[pid][aid]; !ok {
-		return nil, false
+		return nil, Enums.NOT_FOUND_APP
 	}
 
-	return Apps[pid][aid], true
+	return Apps[pid][aid], nil
 }
 
-func ExistsApp(pid string, aid string) bool {
+func ExistsApp(pid string, aid string) error {
 	if _, ok := Apps[pid][aid]; !ok {
-		return false
+		return Enums.NOT_FOUND_APP
 	}
 
-	return true
+	return nil
 }
 
 func InitAppChan(pid string) bool {
@@ -71,9 +71,6 @@ func InitAppChan(pid string) bool {
 }
 
 func PutApp(pid string, aid string, name string, descr string) bool {
-	AppChans[pid].Lock.Lock()
-	defer AppChans[pid].Lock.Unlock()
-
 	if _, ok := Apps[pid]; !ok {
 		Apps[pid] = make(map[string]*App)
 	}
@@ -91,9 +88,11 @@ func PutApp(pid string, aid string, name string, descr string) bool {
 		}
 	}
 
+	AppChans[pid].Lock.Lock()
 	Apps[pid][aid].Name = name
 	Apps[pid][aid].Description = descr
 	Apps[pid][aid].UpdateTime = time.Now().Unix()
+	AppChans[pid].Lock.Unlock()
 
 	AppChans[pid].Channel <- 1
 
@@ -102,9 +101,8 @@ func PutApp(pid string, aid string, name string, descr string) bool {
 
 func DeleteApp(pid string, aid string) bool {
 	AppChans[pid].Lock.Lock()
-	defer AppChans[pid].Lock.Unlock()
-
 	delete(Apps[pid], aid)
+	AppChans[pid].Lock.Unlock()
 
 	AppChans[pid].Channel <- 1
 
